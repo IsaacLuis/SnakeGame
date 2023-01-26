@@ -1,5 +1,5 @@
 //const canvas = document.getElementById("my-canvas")
-//const ctx = canvas.getContext('2d')
+//const context = canvas.getContext('2d')
 const button = document.getElementById("start-button")
 
 
@@ -10,7 +10,7 @@ let snakeHeadX  = 27  //  scale * 5;
 let snakeHeadY = 27   //  scale * 5; 
 
 
-
+//let direction = "Left"
 
 var blockSize = 33;
 var total_row = 27; //total row number         //heigt
@@ -31,7 +31,8 @@ var foodX;
 var foodY;
  
 var gameOver = false;
- 
+let foodCopyX;
+let foodCopyY;
 window.onload = function () {
 
     document.getElementById("start-button").onclick = function() {
@@ -56,28 +57,52 @@ window.onload = function () {
 
 
 }
- 
+function placeFood() {
+ console.log("placing food..")
+  // in x coordinates.
+  foodX = Math.floor(Math.random() * total_col) * blockSize;
+   
+  //in y coordinates.
+  foodY = Math.floor(Math.random() * total_row) * blockSize;
+}
+
 function update() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  console.log("Before ",foodX,foodY)
     if (gameOver) {
         return;
     }
- 
+  
+    
     // Background of a Game
     context.fillStyle = "#31bcaa"
     context.fillRect(0, 0, canvas.width, canvas.height);
- 
+    
     // Set food color and position
+    
     context.fillStyle = "yellow";
-    context.fillRect(foodX, foodY, blockSize, blockSize);
- 
-    if (snakeX == foodX && snakeY == foodY) {
-        snakeBody.push([foodX, foodY]);
-        placeFood();
-    }
+    context.fillRect(foodX, foodY, blockSize-8 , blockSize -8);
+    
+    if (snakeX + 25 > foodX && snakeX < foodX + 25 && snakeY + 25 > foodY && snakeY < foodY + 25) {
+     console.log("Coliding")
+     // if snakeX > foodX && snakeX < foodX + 25 && snakeY > foodY && snakeY < foodY + 25
+      snakeBody.push([foodX , foodY]);
+
+      //console.log(foodX)
+      
+      //snakeBody.push([snakeBodyCopy.pop(),snakeBodyCopy.pop()]) 
+         
+        //placeFood();
+        console.log(snakeBody);
+      
+      placeFood();
+      console.log(foodX,foodY)
+      }
  
     // body of snake will grow
     for (let i = snakeBody.length - 1; i > 0; i--) {
         // it will store previous part of snake to the current part
+        
         snakeBody[i] = snakeBody[i - 1];
     }
     if (snakeBody.length) {
@@ -93,19 +118,34 @@ function update() {
   ctx.arc(playerSnake.x+scale/2, playerSnake.y+scale/2, scale/2, 0, 2 * Math.PI);
 */
     
-    //context.fillStyle = "white";
+    context.fillStyle = "green"; //sqr work
     snakeX += speedX * blockSize; //updating Snake position in X coordinate.
     snakeY += speedY * blockSize;  //updating Snake position in Y coordinate.
-  //  context.fillRect(snakeX, snakeY, blockSize, blockSize);
-    //context.arc(snakeX, snakeY, blockSize/2, 0, 2 * Math.PI);
-//context.fillStyle = "green";
-drawSnakeHead()
-    for (let i = 0; i < snakeBody.length; i++) {
-        //context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
-        //context.arc(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
-        drawSnakeHead()
-    }
+    //context.fillRect(snakeX, snakeY, blockSize, blockSize); //sqr work
+    context.beginPath();
+    context.arc(snakeX, snakeY, blockSize/2, 0, 2 * Math.PI);
+    context.fill()
+
+
+  for (let i = 0; i < snakeBody.length; i++) {
+    //context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);  //sqr work
+    console.log("snakeBody " ,snakeBody)
+    context.beginPath()
+    context.arc(snakeBody[i][0], snakeBody[i][1], blockSize/2, 0, 2 * Math.PI);
+    context.fill()
+    //console.log("score = " ,snakeBody.length)
     
+   // context.clearRect(0, 0, canvas.width, canvas.height);
+    
+}
+//context.fill();
+
+;
+
+
+
+    
+      
     if (snakeX < 0
         || snakeX > total_col * blockSize
         || snakeY < 0
@@ -125,13 +165,13 @@ drawSnakeHead()
         }
     }
 }
- 
+/*
 function drawSnakeHead() {
     context.beginPath();
-    context.arc(snakeX+scale/2, snakeY+blockSize/2, blockSize/2, 0, 2 * Math.PI);
+    context.arc(snakeX+blockSize/2, snakeY+blockSize/2, blockSize/2, 0, 2 * Math.PI);
     context.fillStyle = "green";
     context.fill();
-    //eyes
+  /*  //eyes
     context.beginPath();
     if(direction==="Up") {
         context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
@@ -151,7 +191,11 @@ function drawSnakeHead() {
     }
     context.fillStyle = "black";
     context.fill();
+    
 }
+*/
+
+
 
 // Movement of the Snake - We are using addEventListener
 function changeDirection(e) {
@@ -160,33 +204,31 @@ function changeDirection(e) {
         // snake will not move in the opposite direction
         speedX = 0;
         speedY = -1;
+        //direction = "Up"
     }
     else if (e.code == "ArrowDown" && speedY != -1) {
         //If down arrow key pressed
         speedX = 0;
         speedY = 1;
+        //direction = "Down"
     }
     else if (e.code == "ArrowLeft" && speedX != 1) {
         //If left arrow key pressed
         speedX = -1;
         speedY = 0;
+        //direction = "Left"
     }
     else if (e.code == "ArrowRight" && speedX != -1) {
         //If Right arrow key pressed
         speedX = 1;
         speedY = 0;
+
+      //direction = "Right"
     }
 }
  
 // Randomly place food
-function placeFood() {
- 
-    // in x coordinates.
-    foodX = Math.floor(Math.random() * total_col) * blockSize;
-     
-    //in y coordinates.
-    foodY = Math.floor(Math.random() * total_row) * blockSize;
-}
+
 
 
 
