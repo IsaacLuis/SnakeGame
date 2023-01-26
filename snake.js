@@ -2,6 +2,7 @@
 //const context = canvas.getContext('2d')
 const button = document.getElementById("start-button")
 
+const button2 = document.getElementById('play-again-button');
 
 // canvas H 750 * W 750
 
@@ -10,7 +11,7 @@ let snakeHeadX  = 27  //  scale * 5;
 let snakeHeadY = 27   //  scale * 5; 
 
 
-//let direction = "Left"
+let direction;
 
 var blockSize = 33;
 var total_row = 27; //total row number         //heigt
@@ -25,38 +26,25 @@ var snakeY = blockSize * 5;
 var speedX = 0;  //speed of snake in x coordinate.
 var speedY = 0;  //speed of snake in Y coordinate.
  
-var snakeBody = [];
+var snakeBody
  
 var foodX;
 var foodY;
  
-var gameOver = false;
+var End;
 let foodCopyX;
 let foodCopyY;
 window.onload = function () {
 
-    document.getElementById("start-button").onclick = function() {
-    console.log("Starting")
-  
-  button.style.visibility = "hidden"
-  
-        
-      // Set canvas height and width
-    canvas = document.getElementById("my-canvas");
-    canvas.height = total_row * blockSize;
-    canvas.width = total_col * blockSize;
-    context = canvas.getContext("2d");
-    canvas.style.visibility = "visible"
-    placeFood();
-    document.addEventListener("keyup", changeDirection);  //for movements
-    // Set snake speed
-    setInterval(update, 1000 / 10);
-        
-            
-      }
+    
+    document.getElementById("start-button").onclick = function () {
+    // Start ----
+    Start()   
+    }
 
 
 }
+
 function placeFood() {
  console.log("placing food..")
   // in x coordinates.
@@ -66,11 +54,43 @@ function placeFood() {
   foodY = Math.floor(Math.random() * total_row) * blockSize;
 }
 
+function Start(){
+
+  
+  console.log("Starting function")
+
+  button.style.visibility = "hidden"
+  End= false;
+  snakeBody = [];
+
+  // Set canvas height and width
+  canvas = document.getElementById("my-canvas");
+  canvas.height = total_row * blockSize;
+  canvas.width = total_col * blockSize;
+  context = canvas.getContext("2d");
+  canvas.style.visibility = "visible"
+  placeFood();
+  document.addEventListener("keyup", changeDirection);  //for movements
+  // Set snake speed
+  setInterval(update, 1000 / 10);
+  
+  }     
+      
+    
+
+
+
+
+
+
+
+
 function update() {
   context.clearRect(0, 0, canvas.width, canvas.height);
-  console.log("Before ",foodX,foodY)
-    if (gameOver) {
-        return;
+  
+    if (End === true) {
+      console.log("Come back")
+        return gameOver()
     }
   
     
@@ -134,7 +154,6 @@ function update() {
     context.arc(snakeBody[i][0], snakeBody[i][1], blockSize/2, 0, 2 * Math.PI);
     context.fill()
     //console.log("score = " ,snakeBody.length)
-    
    // context.clearRect(0, 0, canvas.width, canvas.height);
     
 }
@@ -152,50 +171,68 @@ function update() {
         || snakeY > total_row * blockSize) {
          
         // Out of bound condition
-        gameOver = true;
-        alert("Game Over"); // GameOver()
+        //End = true;
+         gameOver()
     }
  
     for (let i = 0; i < snakeBody.length; i++) {
         if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
              
             // Snake eats own body
-            gameOver = true;
-            alert("Game Over") // GameOver()
+            //End = true;
+           gameOver()
         }
     }
 }
-/*
-function drawSnakeHead() {
-    context.beginPath();
-    context.arc(snakeX+blockSize/2, snakeY+blockSize/2, blockSize/2, 0, 2 * Math.PI);
-    context.fillStyle = "green";
-    context.fill();
-  /*  //eyes
-    context.beginPath();
-    if(direction==="Up") {
-        context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-        context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-    }
-    else if(direction==="Down") {
-        context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-        context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-    }
-    else if(direction==="Left") {
-        context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-        context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-    }
-    else {
-        context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-        context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-    }
-    context.fillStyle = "black";
-    context.fill();
+
+function gameOver() 
+{window.location.reload()
+  clearInterval(update)
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "black";
+  
+
+  console.log("Overrrr....")
+  End= true
+  button2.style.visibility = "visible"
+  
+  
+  document.getElementById("play-again-button").onclick = function() {
     
+    console.log("pressing...")
+    
+    //context.clearRect(0, 0, canvas.width, canvas.height);
+    Start()
+  }
 }
-*/
 
 
+
+function drawSnakeHead(direction) {
+  
+    
+  context.beginPath(direction);
+  if(direction==="Up") {
+      context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+      context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+  }
+  else if(direction==="Down") {
+      context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+      context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+  }
+  else if(direction==="Left") {
+      context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+      context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+  }
+  else {
+      context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+      context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
+  }
+  context.fillStyle = "black";
+  context.fill();
+
+   
+}
 
 // Movement of the Snake - We are using addEventListener
 function changeDirection(e) {
@@ -204,29 +241,36 @@ function changeDirection(e) {
         // snake will not move in the opposite direction
         speedX = 0;
         speedY = -1;
-        //direction = "Up"
+        drawSnakeHead("Up")
     }
     else if (e.code == "ArrowDown" && speedY != -1) {
         //If down arrow key pressed
         speedX = 0;
         speedY = 1;
-        //direction = "Down"
+        drawSnakeHead("Down") 
     }
     else if (e.code == "ArrowLeft" && speedX != 1) {
         //If left arrow key pressed
         speedX = -1;
         speedY = 0;
-        //direction = "Left"
+        drawSnakeHead("Left") 
     }
     else if (e.code == "ArrowRight" && speedX != -1) {
         //If Right arrow key pressed
         speedX = 1;
         speedY = 0;
 
-      //direction = "Right"
+      drawSnakeHead("Right")
     }
 }
  
+
+
+
+
+
+
+
 // Randomly place food
 
 
@@ -300,4 +344,6 @@ function startGame() {
 */
 
   
+
+
 
