@@ -6,7 +6,7 @@ const arrayImg = new Image();
  arrayImg.src = 'https://github.com/yuri-brito/snake-game/blob/main/imgFrutas/pngwing.com%20(1).png?raw=true'
 
  const virusImg = new Image();
- virusImg.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuT2AUGdNFibUn3wD9hIcE04ngFNW9x4qYcw&usqp=CAU'
+ virusImg.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO1OQcm5TseXmWlDjlObF-44tnz0ls2OOgWw&usqp=CAU'
 
 
 
@@ -23,7 +23,7 @@ let snakeY = blockSize * 5;
 // Set the total number of rows and columns
 let speedX = 0;  //speed of snake in x .
 let speedY = 0;  //speed of snake in Y .
-
+let count = 0;
 let score = 0;
 let snakeBody;
  
@@ -42,6 +42,7 @@ window.onload = function () {
 
 
 }
+
 
 
 function placeFood() {
@@ -94,7 +95,7 @@ function update() {
         return gameOver()
     }
     
-    score = snakeBody.length;
+    score = snakeBody.length - count;
     // Background of a Game
     context.fillStyle = "#31bcaa"
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -104,12 +105,9 @@ function update() {
     if (snakeX + blockSize +3 > foodX && snakeX < foodX + blockSize +3 && snakeY + blockSize +3 > foodY && snakeY < foodY + blockSize +3) 
     {
      // if snakeX > foodX && snakeX < foodX + 25 && snakeY > foodY && snakeY < foodY + 25
-  
-      snakeBody.push([foodX , foodY]);
-        
+      snakeBody.push([foodX , foodY]);  
       placeFood();
-      
-
+      placeVirus();
       }
  
  
@@ -123,9 +121,9 @@ function update() {
         snakeBody[0] = [snakeX, snakeY];
     }
     
-    if(snakeX + blockSize  > virusX && snakeX < virusX + blockSize  && snakeY + blockSize  > virusY && snakeY < virusY + blockSize ) {
+    if(snakeX + blockSize + 1 > virusX && snakeX < virusX + blockSize +1 && snakeY + blockSize +1 > virusY && snakeY < virusY + blockSize +1) {
 
-      score--
+      count+=2
       placeVirus();
     }
   
