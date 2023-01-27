@@ -3,10 +3,10 @@
 const button = document.getElementById("start-button")
 
 const arrayImg = new Image();
- arrayImg.src = 'https://github.com/yuri-brito/snake-game/blob/main/imgFrutas/pngwing.com%20(1).png?raw=true'
+ arrayImg.src = 'img/banana.png'
 
  const virusImg = new Image();
- virusImg.src = 'https://img.lovepik.com/free-png/20210927/lovepik-cartoon-virus-png-image_401564124_wh1200.png'
+ virusImg.src = 'img/virus.png'
 
 
 
