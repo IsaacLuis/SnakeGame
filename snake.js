@@ -2,38 +2,36 @@
 //const context = canvas.getContext('2d')
 const button = document.getElementById("start-button")
 
-const button2 = document.getElementById('play-again-button');
+const arrayImg = new Image();
+ arrayImg.src = 'https://github.com/yuri-brito/snake-game/blob/main/imgFrutas/pngwing.com%20(1).png?raw=true'
 
-// canvas H 750 * W 750
-
-const scale = 35;
-let snakeHeadX  = 27  //  scale * 5;
-let snakeHeadY = 27   //  scale * 5; 
+ const virusImg = new Image();
+ virusImg.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuT2AUGdNFibUn3wD9hIcE04ngFNW9x4qYcw&usqp=CAU'
 
 
-let direction;
 
-var blockSize = 33;
-var total_row = 27; //total row number         //heigt
-var total_col = 27; //total column number  // width
-var canvas;
-var context;
+
+let blockSize = 27;
+let total_row = 23;     //total row number         //heigt
+let total_col = 23;     //total column number  // width
+let canvas;
+let context;
  
-var snakeX = blockSize * 5;
-var snakeY = blockSize * 5;
+let snakeX = blockSize * 5;
+let snakeY = blockSize * 5;
  
 // Set the total number of rows and columns
-var speedX = 0;  //speed of snake in x coordinate.
-var speedY = 0;  //speed of snake in Y coordinate.
+let speedX = 0;  //speed of snake in x .
+let speedY = 0;  //speed of snake in Y .
+
+let score = 0;
+let snakeBody;
  
-var snakeBody
- 
-var foodX;
-var foodY;
- 
-var End;
-let foodCopyX;
-let foodCopyY;
+let foodX;
+let foodY;
+
+let End;
+
 window.onload = function () {
 
     
@@ -45,18 +43,29 @@ window.onload = function () {
 
 }
 
+
 function placeFood() {
  console.log("placing food..")
-  // in x coordinates.
+  // in x 
   foodX = Math.floor(Math.random() * total_col) * blockSize;
    
-  //in y coordinates.
+  //in y 
   foodY = Math.floor(Math.random() * total_row) * blockSize;
 }
 
-function Start(){
 
-  
+function placeVirus() {
+  console.log("placing food..")
+   // in x 
+   virusX = Math.floor(Math.random() * total_col) * blockSize;
+    
+   //in y 
+   virusY = Math.floor(Math.random() * total_row) * blockSize;
+   context.drawImage(virusImg, virusX, virusY, blockSize, blockSize);
+ }
+
+
+function Start(){
   console.log("Starting function")
 
   button.style.visibility = "hidden"
@@ -70,6 +79,7 @@ function Start(){
   context = canvas.getContext("2d");
   canvas.style.visibility = "visible"
   placeFood();
+  placeVirus();
   document.addEventListener("keyup", changeDirection);  //for movements
   // Set snake speed
   setInterval(update, 1000 / 10);
@@ -77,47 +87,31 @@ function Start(){
   }     
       
     
-
-
-
-
-
-
-
-
 function update() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   
     if (End === true) {
-      console.log("Come back")
         return gameOver()
     }
-  
     
+    score = snakeBody.length;
     // Background of a Game
     context.fillStyle = "#31bcaa"
     context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Set food color and position
-    
-    context.fillStyle = "yellow";
-    context.fillRect(foodX, foodY, blockSize-8 , blockSize -8);
-    
-    if (snakeX + 25 > foodX && snakeX < foodX + 25 && snakeY + 25 > foodY && snakeY < foodY + 25) {
-     console.log("Coliding")
+     
+  context.drawImage(virusImg,virusX,virusY,blockSize,blockSize)  
+  context.drawImage(arrayImg, foodX, foodY, blockSize, blockSize);
+    if (snakeX + blockSize +3 > foodX && snakeX < foodX + blockSize +3 && snakeY + blockSize +3 > foodY && snakeY < foodY + blockSize +3) 
+    {
      // if snakeX > foodX && snakeX < foodX + 25 && snakeY > foodY && snakeY < foodY + 25
+  
       snakeBody.push([foodX , foodY]);
-
-      //console.log(foodX)
-      
-      //snakeBody.push([snakeBodyCopy.pop(),snakeBodyCopy.pop()]) 
-         
-        //placeFood();
-        console.log(snakeBody);
-      
+        
       placeFood();
-      console.log(foodX,foodY)
+      
+
       }
+ 
  
     // body of snake will grow
     for (let i = snakeBody.length - 1; i > 0; i--) {
@@ -128,111 +122,79 @@ function update() {
     if (snakeBody.length) {
         snakeBody[0] = [snakeX, snakeY];
     }
- 
-/*
-    ctx.beginPath();
-  ctx.arc(snakeX, snakeY, scale/2, 0, 2 * Math.PI);
-  ctx.fillStyle = "green";
-  ctx.fill();
-
-  ctx.arc(playerSnake.x+scale/2, playerSnake.y+scale/2, scale/2, 0, 2 * Math.PI);
-*/
     
+    if(snakeX + blockSize  > virusX && snakeX < virusX + blockSize  && snakeY + blockSize  > virusY && snakeY < virusY + blockSize ) {
+
+      score--
+      placeVirus();
+    }
+  
     context.fillStyle = "green"; //sqr work
     snakeX += speedX * blockSize; //updating Snake position in X coordinate.
     snakeY += speedY * blockSize;  //updating Snake position in Y coordinate.
-    //context.fillRect(snakeX, snakeY, blockSize, blockSize); //sqr work
     context.beginPath();
     context.arc(snakeX, snakeY, blockSize/2, 0, 2 * Math.PI);
     context.fill()
 
 
   for (let i = 0; i < snakeBody.length; i++) {
-    //context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);  //sqr work
     console.log("snakeBody " ,snakeBody)
     context.beginPath()
     context.arc(snakeBody[i][0], snakeBody[i][1], blockSize/2, 0, 2 * Math.PI);
-    context.fill()
-    //console.log("score = " ,snakeBody.length)
-   // context.clearRect(0, 0, canvas.width, canvas.height);
-    
+    context.fill()  
 }
 //context.fill();
-
-;
-
-
-
-    
-      
-    if (snakeX < 0
-        || snakeX > total_col * blockSize
-        || snakeY < 0
-        || snakeY > total_row * blockSize) {
-         
-        // Out of bound condition
-        //End = true;
+    //if(snakeX >= canvas.width || snakeX < 0 || snakeY >= canvas.height || snakeY < 0)
+    if (snakeX <= 0  || snakeX >= total_col * blockSize || snakeY <= 0 || snakeY >= total_row * blockSize) 
+    {
+        // Out of bound 
          gameOver()
     }
  
     for (let i = 0; i < snakeBody.length; i++) {
         if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
-             
-            // Snake eats own body
-            //End = true;
+                        //  If Snake eats own body
            gameOver()
         }
     }
-}
+    showScore()
+  }
 
 function gameOver() 
-{window.location.reload()
-  clearInterval(update)
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "black";
-  
+{
 
   console.log("Overrrr....")
   End= true
-  button2.style.visibility = "visible"
+  button.style.visibility = "visible"
+  if (score > 10) {
+    context.fillStyle = "white";
+    context.font = "30px serif";
+    context.fillText(`Your score is ${score}.  You've won!`, 200, 150);
+  } else {
+    context.fillStyle = "white";
+    context.font = "20px serif";
+    context.fillText(`Your score is ${score}.  You've lost. You need 10!`, 200, 150);
+  }
   
-  
-  document.getElementById("play-again-button").onclick = function() {
-    
-    console.log("pressing...")
-    
-    //context.clearRect(0, 0, canvas.width, canvas.height);
-    Start()
-  }
-}
-
-
-
-function drawSnakeHead(direction) {
-  
-    
-  context.beginPath(direction);
-  if(direction==="Up") {
-      context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-      context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-  }
-  else if(direction==="Down") {
-      context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-      context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-  }
-  else if(direction==="Left") {
-      context.arc(snakeX+(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-      context.arc(snakeX+(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-  }
-  else {
-      context.arc(snakeX+blockSize-(blockSize/5), snakeY+(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-      context.arc(snakeX+blockSize-(blockSize/5), snakeY+blockSize-(blockSize/5), blockSize/8, 0, 2 * Math.PI);
-  }
-  context.fillStyle = "black";
-  context.fill();
-
+  document.getElementById("start-button").onclick = function () {
+    window.location.reload()
    
+    }
+    
+  
 }
+
+
+function showScore() {
+  //context.fillStyle = "black";
+  context.fillRect(10, 10, 130, 50);
+
+  context.fillStyle = "white";
+  context.font = "24px serif";
+  context.fillText(`Score: ${score}`, 35, 43);
+}
+
+
 
 // Movement of the Snake - We are using addEventListener
 function changeDirection(e) {
@@ -241,109 +203,33 @@ function changeDirection(e) {
         // snake will not move in the opposite direction
         speedX = 0;
         speedY = -1;
-        drawSnakeHead("Up")
+
+        
+       
     }
     else if (e.code == "ArrowDown" && speedY != -1) {
         //If down arrow key pressed
         speedX = 0;
         speedY = 1;
-        drawSnakeHead("Down") 
+
+        
     }
     else if (e.code == "ArrowLeft" && speedX != 1) {
         //If left arrow key pressed
         speedX = -1;
         speedY = 0;
-        drawSnakeHead("Left") 
+       
+
     }
     else if (e.code == "ArrowRight" && speedX != -1) {
         //If Right arrow key pressed
         speedX = 1;
         speedY = 0;
 
-      drawSnakeHead("Right")
+       
+         
     }
 }
  
-
-
-
-
-
-
-
-// Randomly place food
-
-
-
-
-
-
-
-
-
-/*
-function startGame() {
-
-  console.log("Starting")
-  //Invisible
-  button.style.visibility = "hidden"
-  //logo.style.visibility = "hidden"
-  //logo.style.height = "0px"
-  // Visible
-  canvas.width = "750"
-  canvas.height = "750"
-  canvas.style.visibility = "visible"
-  
-  
-  directionVar = "Right";
-    direction = "Right";
-    previousDir = "Right";
-  
-    speedX = scale * speed;
-    speedY = 0;
-
-}
-  
-  window.onload = function() {
-   
-    document.getElementById("start-button").onclick = function() {
-      
-      startGame()
-    // checkCollision() 
-      //moveSnakeForward()
-      
-          
-    }
-    document.addEventListener('keydown', e => {
-      playerSnake.draw();
-      switch (e.keyCode) {
-        case 38:
-          //changeDirection("Up")
-          playerSnake.moveUp();
-          break;
-        case 40:
-          //changeDirection("Down")
-          playerSnake.moveDown();
-          
-          break;
-        case 37:
-          //changeDirection("Left")
-          playerSnake.moveLeft();
-          break;
-        case 39:
-          //changeDirection("Right")
-          
-         playerSnake.moveRight();
-          break;
-      }
-  
-    });
-  }
-
-  
-*/
-
-  
-
 
 
