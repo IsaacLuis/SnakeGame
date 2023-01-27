@@ -6,7 +6,8 @@ const arrayImg = new Image();
  arrayImg.src = 'img/banana.png'
 
  const virusImg = new Image();
- virusImg.src = 'img/virus.png'
+ virusImg.src = 'img/virus-transformed.png'
+ 
 
 
 
