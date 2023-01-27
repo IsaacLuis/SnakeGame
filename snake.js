@@ -6,7 +6,7 @@ const arrayImg = new Image();
  arrayImg.src = 'https://github.com/yuri-brito/snake-game/blob/main/imgFrutas/pngwing.com%20(1).png?raw=true'
 
  const virusImg = new Image();
- virusImg.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO1OQcm5TseXmWlDjlObF-44tnz0ls2OOgWw&usqp=CAU'
+ virusImg.src = 'https://img.lovepik.com/free-png/20210927/lovepik-cartoon-virus-png-image_401564124_wh1200.png'
 
 
 
